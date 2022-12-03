@@ -1,0 +1,155 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+//    id 'com.example.greeting' version '0.0.1-SNAPSHOT'
+    id 'com.ruppyrup.secretsplugin' version '1.0-SNAPSHOT'
+    id 'idea'
+    id "io.freefair.lombok" version "6.6"
+}
+
+group 'com.ruppyrup'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '17'
+
+sourceSets {
+    integrationTest {
+        java.srcDir file("src/integrationTest/java")
+        resources.srcDir file("src/integrationTest/resources")
+        runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
+        compileClasspath += sourceSets.main.compileClasspath + sourceSets.test.compileClasspath
+    }
+}
+
+// changes directories to test sources roote
+idea {
+    module {
+        sourceSets.integrationTest.allSource.srcDirs.each { srcDir -> module.testSourceDirs += srcDir}
+    }
+    module {
+        sourceSets.localTest.allSource.srcDirs.each { srcDir -> module.testSourceDirs += srcDir}
+    }
+}
+
+task printSourceSetInformation(){
+    doLast{
+        sourceSets.each { srcSet ->
+            println "["+srcSet.name+"]"
+            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+            print "-->Compile classpath:\n"
+            srcSet.compileClasspath.files.each {
+                print "  "+it.path+"\n"
+            }
+            println ""
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+configurations {
+    integrationTestImplmentation.extendsFrom testImplementation
+    integrationRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    integrationTestImplementation "io.cucumber:cucumber-spring:${cucumberVersion}"
+    integrationTestImplementation "io.cucumber:cucumber-jvm:${cucumberVersion}"
+    integrationTestImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.platform:junit-platform-suite'
+
+    integrationTestImplmentation 'org.assertj:assertj-core:3.23.1'
+//    localTestImplementation 'io.cucumber:cucumber-java:6.10.0'
+}
+
+secrets {
+//    prefix = "RuppyRup"
+}
+
+println "secret two = ${secrets.secret("two").getSecret()}"
+
+
+task RunCukesTest(type: Test) {
+
+    systemProperty "jwtToken", "99"
+    systemProperty "dbPassword", "chimp"
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+test {
+    systemProperty "jwtToken", secrets.secret("one").getSecret()
+    systemProperty "dbPassword", secrets.secret("two").getSecret()
+
+    useJUnitPlatform()
+    exclude 'com/ruppyrup/it/**'
+}
+
+
+bootRun {
+//    System.setProperty('jwtToken', '300')
+    args += ["--jwtToken=200"]
+}
+
+
+//def params = qaparams {
+//}.retreiveParams()
+//
+//tasks.named('test') {
+//    dependsOn('qaparams')
+//
+//    println "Params  = ${params}"
+//
+//    systemProperty "jwtToken", params.get("propA")
+//    systemProperty "dbPassword", params.get("propB")
+//
+//    useJUnitPlatform()
+//}
+//
+//def a = 2
+//def b = 11
+//def r = 0
+//
+//sum {
+//    num1 = a
+//    num2 = b
+//}
+//
+//def subResult = sub {
+//    num1 = a
+//    num2 = b
+//}.calculate()
+//
+//def sumResult = sum {
+//    num1 = a
+//    num2 = b
+//}.calculate()
+//
+//println "${a} - ${b} = ${subResult}"
+//
+//println "${a} + ${b} = ${sumResult}"
+//
+//def jwtToken = jwt {
+//    jwtPath = "https://1d2a40f7-b034-47af-8396-9d719ac34303.mock.pstmn.io/api/jwt"
+//    username = "bob"
+//    password = "monkey"
+//}.goAndFetchJwt()
+//
+//println "jwt token = ${jwtToken}"
+//
+//vmopts {
+//    runConfigFilePath = ".idea/runConfigurations/Main.xml"
+//    vmOption = "jwtToken"
+//}
+
