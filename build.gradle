@@ -80,12 +80,14 @@ println "secret two = ${secrets.secret("two").getSecret()}"
 
 
 task RunCukesTest(type: Test) {
-
     systemProperty "jwtToken", "99"
     systemProperty "dbPassword", "chimp"
     useJUnitPlatform()
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
+    configure {
+        group = 'verification'
+    }
 }
 
 test {
@@ -94,6 +96,11 @@ test {
 
     useJUnitPlatform()
     exclude 'com/ruppyrup/it/**'
+}
+
+tasks.check.configure {
+    // Run the functional tests as part of `check`
+    dependsOn(RunCukesTest)
 }
 
 
