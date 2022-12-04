@@ -25,10 +25,10 @@ sourceSets {
 // changes directories to test sources roote
 idea {
     module {
-        sourceSets.integrationTest.allSource.srcDirs.each { srcDir -> module.testSourceDirs += srcDir}
+        testSources.from(sourceSets.integrationTest.java.srcDirs)
     }
     module {
-        sourceSets.localTest.allSource.srcDirs.each { srcDir -> module.testSourceDirs += srcDir}
+        testSources.from(sourceSets.localTest.java.srcDirs)
     }
 }
 
