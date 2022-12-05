@@ -15,8 +15,8 @@ sourceCompatibility = '17'
 
 sourceSets {
     integrationTest {
-        java.srcDir file("src/integrationTest/java")
-        resources.srcDir file("src/integrationTest/resources")
+//        java.srcDir file("src/integrationTest/java")
+//        resources.srcDir file("src/integrationTest/resources")
         runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
         compileClasspath += sourceSets.main.compileClasspath + sourceSets.test.compileClasspath
     }
@@ -80,8 +80,8 @@ println "secret two = ${secrets.secret("two").getSecret()}"
 
 
 task RunCukesTest(type: Test) {
-    systemProperty "jwtToken", "99"
-    systemProperty "dbPassword", "chimp"
+    systemProperty "jwtToken", secrets.secret("three").getSecret()
+    systemProperty "dbPassword", secrets.secret("four").getSecret()
     useJUnitPlatform()
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
