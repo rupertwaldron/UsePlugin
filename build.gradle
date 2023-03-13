@@ -7,30 +7,25 @@ plugins {
     id 'com.ruppyrup.secretsplugin' version '1.0-SNAPSHOT'
     id 'idea'
     id "io.freefair.lombok" version "6.6"
+    id 'org.unbroken-dome.test-sets' version '4.0.0'
+    id "com.dorongold.task-tree" version "2.1.1"
 }
 
 group 'com.ruppyrup'
 version '1.0-SNAPSHOT'
 sourceCompatibility = '17'
 
-sourceSets {
-    integrationTest {
-//        java.srcDir file("src/integrationTest/java")
-//        resources.srcDir file("src/integrationTest/resources")
-        runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
-        compileClasspath += sourceSets.main.compileClasspath + sourceSets.test.compileClasspath
-    }
+testSets {
+    integrationTest
 }
 
-// changes directories to test sources roote
-idea {
-    module {
-        testSources.from(sourceSets.integrationTest.java.srcDirs)
-    }
-    module {
-        testSources.from(sourceSets.localTest.java.srcDirs)
-    }
+integrationTest {
+    useJUnitPlatform()
 }
+
+//tasks.named('check') {
+//    dependsOn tasks.named('integrationTest')
+//}
 
 task printSourceSetInformation(){
     doLast{
@@ -43,6 +38,12 @@ task printSourceSetInformation(){
                 print "  "+it.path+"\n"
             }
             println ""
+            println "["+srcSet.name+"]"
+            print "-->Runtime classpath:\n"
+            srcSet.runtimeClasspath.files.each {
+                print "  "+it.path+"\n"
+            }
+            println ""
         }
     }
 }
@@ -50,11 +51,6 @@ task printSourceSetInformation(){
 repositories {
     mavenCentral()
     mavenLocal()
-}
-
-configurations {
-    integrationTestImplmentation.extendsFrom testImplementation
-    integrationRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -68,46 +64,46 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.junit.platform:junit-platform-suite'
 
-    integrationTestImplmentation 'org.assertj:assertj-core:3.23.1'
+    integrationTestImplementation 'org.assertj:assertj-core:3.23.1'
 //    localTestImplementation 'io.cucumber:cucumber-java:6.10.0'
 }
 
-secrets {
-//    prefix = "RuppyRup"
-}
+//secrets {
+////    prefix = "RuppyRup"
+//}
 
-println "secret two = ${secrets.secret("two").getSecret()}"
+//println "secret two = ${secrets.secret("two").getSecret()}"
 
 
-task RunCukesTest(type: Test) {
-    systemProperty "jwtToken", secrets.secret("three").getSecret()
-    systemProperty "dbPassword", secrets.secret("four").getSecret()
-    useJUnitPlatform()
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    configure {
-        group = 'verification'
-    }
-}
+//task RunCukesTest(type: Test) {
+//    systemProperty "jwtToken", secrets.secret("three").getSecret()
+//    systemProperty "dbPassword", secrets.secret("four").getSecret()
+//    useJUnitPlatform()
+//    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+//    classpath = sourceSets.integrationTest.runtimeClasspath
+//    configure {
+//        group = 'verification'
+//    }
+//}
 
 test {
-    systemProperty "jwtToken", secrets.secret("one").getSecret()
-    systemProperty "dbPassword", secrets.secret("two").getSecret()
+//    systemProperty "jwtToken", secrets.secret("one").getSecret()
+//    systemProperty "dbPassword", secrets.secret("two").getSecret()
 
     useJUnitPlatform()
     exclude 'com/ruppyrup/it/**'
 }
 
-tasks.check.configure {
-    // Run the functional tests as part of `check`
-    dependsOn(RunCukesTest)
-}
+//tasks.check.configure {
+//    // Run the functional tests as part of `check`
+//    dependsOn(RunCukesTest)
+//}
 
 
-bootRun {
-//    System.setProperty('jwtToken', '300')
-    args += ["--jwtToken=200"]
-}
+//bootRun {
+////    System.setProperty('jwtToken', '300')
+//    args += ["--jwtToken=200"]
+//}
 
 
 //def params = qaparams {
