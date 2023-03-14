@@ -35,6 +35,7 @@ public class CustomSteps {
 
     @Then("I will receive the correct message")
     public void iWillReceiveTheCorrectMessage() {
+        System.getProperties().forEach((k, v) -> System.out.println(k + " ::: " + v));
         assertThat(resultMessage).isEqualTo("chimp99");
     }
 }
