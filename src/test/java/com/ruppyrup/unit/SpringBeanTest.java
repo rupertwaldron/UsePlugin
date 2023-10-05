@@ -8,8 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-//@SpringBootTest(properties = {"jwtToken=43", "dbPassword=monkey"})
+//@SpringBootTest
+@SpringBootTest(properties = {"jwtToken=43", "dbPassword=monkey"})
 class SpringBeanTest {
 
   @Autowired

@@ -4,7 +4,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 //    id 'com.example.greeting' version '0.0.1-SNAPSHOT'
-    id 'com.ruppyrup.secretsplugin' version '1.0-SNAPSHOT'
+    id 'com.ruppyrup.secretsplugin' version '0.0.1-SNAPSHOT'
     id 'idea'
     id "io.freefair.lombok" version "6.6"
     id 'org.unbroken-dome.test-sets' version '4.0.0'
@@ -68,6 +68,7 @@ dependencies {
 //    localTestImplementation 'io.cucumber:cucumber-java:6.10.0'
 }
 
+
 //secrets {
 ////    prefix = "RuppyRup"
 //}
@@ -75,16 +76,16 @@ dependencies {
 //println "secret two = ${secrets.secret("two").getSecret()}"
 
 
-//task RunCukesTest(type: Test) {
-//    systemProperty "jwtToken", secrets.secret("three").getSecret()
-//    systemProperty "dbPassword", secrets.secret("four").getSecret()
-//    useJUnitPlatform()
-//    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-//    classpath = sourceSets.integrationTest.runtimeClasspath
-//    configure {
-//        group = 'verification'
-//    }
-//}
+task RunCukesTest(type: Test) {
+//    systemProperty "jwtToken", "99"
+//    systemProperty "dbPassword", "chimp"
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    configure {
+        group = 'verification'
+    }
+}
 
 test {
 //    systemProperty "jwtToken", secrets.secret("one").getSecret()
@@ -93,6 +94,15 @@ test {
     useJUnitPlatform()
     exclude 'com/ruppyrup/it/**'
 }
+
+secretBundles {
+    cukeBundle {
+        secret "dbPassword", "dbPassword"
+        secret "jwtToken", "jwtToken"
+    }
+}
+
+secretBundles.cukeBundle.injectTo(tasks.RunCukesTest)
 
 //tasks.check.configure {
 //    // Run the functional tests as part of `check`
