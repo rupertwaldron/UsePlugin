@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpringBean {
 
-  @Value("${jwtToken:oops}")
+  @Value("${myJwtToken:oops}")
   private String jwtToken;
 
-  @Value("${dbPassword:nopassword}")
+  @Value("${myDbPassword:nopassword}")
   private String dbPassword;
 
 
