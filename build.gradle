@@ -102,7 +102,7 @@ secretBundles {
     }
 }
 
-secretBundles.cukeBundle.injectTo(tasks.RunCukesTest)
+secretBundles.cukeBundle.injectTo(tasks.RunCukesTest, test)
 
 //tasks.check.configure {
 //    // Run the functional tests as part of `check`

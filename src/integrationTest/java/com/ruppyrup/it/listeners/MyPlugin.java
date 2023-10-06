@@ -11,7 +11,7 @@ public class MyPlugin implements ConcurrentEventListener {
     public void setEventPublisher(EventPublisher publisher) {
         publisher.registerHandlerFor(
                 TestCaseStarted.class,
-                (TestCaseStarted event) -> System.out.println("Test case started with event listener : " + event.getTestCase().getName())
+                (TestCaseStarted event) -> System.out.println("My plugin test started with event listener : " + event.getTestCase().getKeyword())
         );
     }
 }
